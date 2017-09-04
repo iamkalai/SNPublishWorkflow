@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<unload unload_date="2017-09-04 09:51:17">
+<sys_remote_update_set action="INSERT_OR_UPDATE">
+<application display_value="Global">global</application>
+<application_name>Global</application_name>
+<application_scope>global</application_scope>
+<application_version/>
+<collisions/>
+<commit_date/>
+<deleted/>
+<description>This allows you to publish an existing workflow version as your current workflow and make the existing published version inactive.
+This is useful when you want to revert a workflow to a previous version.</description>
+<inserted/>
+<name>Publish Workflow Version-V1.0</name>
+<origin_sys_id/>
+<release_date/>
+<remote_sys_id>18517cf0db010300d8ccd421cf961923</remote_sys_id>
+<state>loaded</state>
+<summary/>
+<sys_class_name>sys_remote_update_set</sys_class_name>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2017-09-04 09:51:16</sys_created_on>
+<sys_id>a35b9d78db010300d8ccd421cf96194b</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2017-09-04 09:51:16</sys_updated_on>
+<update_set display_value=""/>
+<update_source display_value=""/>
+<updated/>
+</sys_remote_update_set>
+<sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_script_include_f5823434db010300d8ccd421cf9619a2</name>
+<payload>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;record_update table="sys_script_include"&gt;&lt;sys_script_include action="INSERT_OR_UPDATE"&gt;&lt;access&gt;package_private&lt;/access&gt;&lt;active&gt;true&lt;/active&gt;&lt;api_name&gt;global.WorkflowVersionManagement&lt;/api_name&gt;&lt;client_callable&gt;true&lt;/client_callable&gt;&lt;description&gt;This is used by Publish Workflow UI action&lt;/description&gt;&lt;name&gt;WorkflowVersionManagement&lt;/name&gt;&lt;script&gt;&lt;![CDATA[var WorkflowVersionManagement = Class.create();
+WorkflowVersionManagement.prototype = Object.extendsObject(AbstractAjaxProcessor, {
+	
+	uiActionVisibility : function(workflowID){
+		var getVersions = new GlideAggregate('wf_workflow_version');
+		getVersions.addEncodedQuery('workflow='+workflowID);
+		getVersions.addAggregate('COUNT', 'workflow');
+		getVersions.addHaving('COUNT','workflow', '&gt;', '1');
+		getVersions.query();
+		if (getVersions.next()) {
+			return true;
+		}
+		return false;
+		
+	},
+	
+	revertWorkflowVersion : function(workflowContextID){
+		var operationStatus = 'Operation Failed';
+		
+		var getPublishedVersion = new GlideRecord('wf_workflow_version');	getPublishedVersion.addEncodedQuery('workflow='+workflowContextID.workflow.toString()+'^published=true');
+		getPublishedVersion.setLimit(1);
+		getPublishedVersion.query();
+		if(getPublishedVersion.next()) {
+			getPublishedVersion.published = false;
+			getPublishedVersion.update();
+		}
+		
+		var getCurrentVersion = new GlideRecord('wf_workflow_version');
+		if(getCurrentVersion.get(workflowContextID.sys_id.toString()))
+			{
+			getCurrentVersion.published = true;
+			getCurrentVersion.update();
+			operationStatus = 'Operation Successful';
+		}
+		return operationStatus;
+	}
+});]]&gt;&lt;/script&gt;&lt;sys_class_name&gt;sys_script_include&lt;/sys_class_name&gt;&lt;sys_created_by&gt;admin&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2017-09-04 06:55:03&lt;/sys_created_on&gt;&lt;sys_customer_update&gt;true&lt;/sys_customer_update&gt;&lt;sys_id&gt;f5823434db010300d8ccd421cf9619a2&lt;/sys_id&gt;&lt;sys_mod_count&gt;13&lt;/sys_mod_count&gt;&lt;sys_name&gt;WorkflowVersionManagement&lt;/sys_name&gt;&lt;sys_package display_value="Global" source="global"&gt;global&lt;/sys_package&gt;&lt;sys_policy/&gt;&lt;sys_replace_on_upgrade&gt;false&lt;/sys_replace_on_upgrade&gt;&lt;sys_scope display_value="Global"&gt;global&lt;/sys_scope&gt;&lt;sys_update_name&gt;sys_script_include_f5823434db010300d8ccd421cf9619a2&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;admin&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2017-09-04 08:01:41&lt;/sys_updated_on&gt;&lt;/sys_script_include&gt;&lt;/record_update&gt;</payload>
+<remote_update_set display_value="Publish Workflow Version-V1.0">a35b9d78db010300d8ccd421cf96194b</remote_update_set>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2017-09-04 09:51:16</sys_created_on>
+<sys_id>275b9d78db010300d8ccd421cf96194b</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2017-09-04 09:51:16</sys_updated_on>
+<table/>
+<target_name>WorkflowVersionManagement</target_name>
+<type>Script Include</type>
+<update_domain>global</update_domain>
+<update_set display_value=""/>
+<view/>
+</sys_update_xml>
+<sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_ui_action_34e2bcf0db010300d8ccd421cf96190c</name>
+<payload>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;record_update sys_domain="global" table="sys_ui_action"&gt;&lt;sys_ui_action action="INSERT_OR_UPDATE"&gt;&lt;action_name&gt;publish_workflow&lt;/action_name&gt;&lt;active&gt;true&lt;/active&gt;&lt;client&gt;false&lt;/client&gt;&lt;comments/&gt;&lt;condition&gt;gs.hasRole('admin') &amp;amp;&amp;amp; !(current.published) &amp;amp;&amp;amp; new WorkflowVersionManagement().uiActionVisibility(current.workflow)&lt;/condition&gt;&lt;form_action&gt;true&lt;/form_action&gt;&lt;form_button&gt;false&lt;/form_button&gt;&lt;form_context_menu&gt;false&lt;/form_context_menu&gt;&lt;form_link&gt;true&lt;/form_link&gt;&lt;hint/&gt;&lt;list_action&gt;false&lt;/list_action&gt;&lt;list_banner_button&gt;false&lt;/list_banner_button&gt;&lt;list_button&gt;false&lt;/list_button&gt;&lt;list_choice&gt;false&lt;/list_choice&gt;&lt;list_context_menu&gt;false&lt;/list_context_menu&gt;&lt;list_link&gt;false&lt;/list_link&gt;&lt;list_save_with_form_button&gt;false&lt;/list_save_with_form_button&gt;&lt;name&gt;Publish Workflow&lt;/name&gt;&lt;onclick/&gt;&lt;order&gt;100&lt;/order&gt;&lt;script&gt;&lt;![CDATA[var operationMessage = (new WorkflowVersionManagement().revertWorkflowVersion(current));
+action.setRedirectURL(current);
+gs.addInfoMessage(operationMessage);
+]]&gt;&lt;/script&gt;&lt;show_insert&gt;false&lt;/show_insert&gt;&lt;show_multiple_update&gt;false&lt;/show_multiple_update&gt;&lt;show_query&gt;false&lt;/show_query&gt;&lt;show_update&gt;true&lt;/show_update&gt;&lt;sys_class_name&gt;sys_ui_action&lt;/sys_class_name&gt;&lt;sys_created_by&gt;admin&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2017-09-04 06:54:25&lt;/sys_created_on&gt;&lt;sys_customer_update&gt;true&lt;/sys_customer_update&gt;&lt;sys_domain&gt;global&lt;/sys_domain&gt;&lt;sys_domain_path&gt;/&lt;/sys_domain_path&gt;&lt;sys_id&gt;34e2bcf0db010300d8ccd421cf96190c&lt;/sys_id&gt;&lt;sys_mod_count&gt;10&lt;/sys_mod_count&gt;&lt;sys_name&gt;Publish Workflow&lt;/sys_name&gt;&lt;sys_overrides/&gt;&lt;sys_package display_value="Global" source="global"&gt;global&lt;/sys_package&gt;&lt;sys_policy/&gt;&lt;sys_replace_on_upgrade&gt;false&lt;/sys_replace_on_upgrade&gt;&lt;sys_scope display_value="Global"&gt;global&lt;/sys_scope&gt;&lt;sys_update_name&gt;sys_ui_action_34e2bcf0db010300d8ccd421cf96190c&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;admin&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2017-09-04 08:00:16&lt;/sys_updated_on&gt;&lt;table&gt;wf_workflow_version&lt;/table&gt;&lt;ui11_compatible&gt;false&lt;/ui11_compatible&gt;&lt;ui16_compatible&gt;false&lt;/ui16_compatible&gt;&lt;/sys_ui_action&gt;&lt;/record_update&gt;</payload>
+<remote_update_set display_value="Publish Workflow Version-V1.0">a35b9d78db010300d8ccd421cf96194b</remote_update_set>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2017-09-04 09:51:16</sys_created_on>
+<sys_id>675b9d78db010300d8ccd421cf96194b</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2017-09-04 09:51:16</sys_updated_on>
+<table>wf_workflow_version</table>
+<target_name>Publish Workflow</target_name>
+<type>UI Action</type>
+<update_domain>global</update_domain>
+<update_set display_value=""/>
+<view/>
+</sys_update_xml>
+</unload>
